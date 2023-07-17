@@ -1,0 +1,180 @@
+// Biến (Variable)
+// Biến trong scss giúp lưu trữ các giá trị sử dụng nhiều lần như màu sắc, px, font-weight,..
+$color-blue-1 : #2b72dc;
+$color-blue-2 : #1E345E;
+$color-bg : #F6F9FE;
+
+// Biến về độ dày chữ
+$fw-title : bold;
+$fw-sub-title : 600;
+$fw-content : 400;
+
+// biến về kích thước chữ
+$fs-title : 60px;
+$fs-sub-title : 20px;
+$fs-section-title : 35px;
+$fs-content : 16px;
+
+// MIXIN : 
+@mixin styleTitle ($fs) {
+    font-weight: $fw-title;
+    color: $color-blue-1;
+    font-size: $fs;
+}
+
+@mixin styleContent () {
+    font-weight: $fw-content;
+    color: $color-blue-2;
+    font-size: $fs-content;
+}
+
+@mixin styleSubTitle ($fs) {
+    font-size: $fs;
+    font-weight: $fw-sub-title ;
+    color: $color-blue-2;
+}
+
+@mixin styleButton(){
+    border: 2px solid $color-blue-1;
+    background-color: $color-bg;
+    color: $color-blue-1;
+    border-radius: 8px;
+    transition: all 0.5s;
+    padding: 10px 20px;
+    cursor: pointer;
+    &:hover {
+        border: 2px solid $color-bg;
+        background-color: $color-blue-1;
+        color: $color-bg;
+    }
+    i {
+        margin-right: 10px;
+    }
+}
+// reset css
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+// container
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+// Nested css : cơ chế cho viếc css class con bên trong class cha
+header {
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    padding: 20px 0;
+    background-color: $color-bg;
+    position: relative;
+    // loại bỏ text-decoration
+    a {
+        text-decoration: none;
+    }
+
+    .header_content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .header_logo {
+            a {
+                @include styleTitle(24px);                
+            }
+        }
+
+        nav {
+            ul {
+                list-style: none;
+                li {
+                    display: inline-block;
+                    margin: 0 10px;
+                    // ứng dụng parent selector để tạo ra selector li.active
+                    &.active {
+                        a {
+                            color: $color-blue-1;
+                            &::before {
+                                width: 100%;
+                            }
+                        }
+                    }
+                    a {
+                        @include styleContent();
+                        position: relative;
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            width: 0%;
+                            height: 3px;
+                            background-color: $color-blue-1;
+                            bottom: -10px;
+                            left: 0;
+                            transition: all 0.5s;
+                        }
+
+                        //hover để hiển thị before
+                        &:hover::before {
+                            width: 100%;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+.banner {
+    background-image: url(../img/product-header-bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 40px 0;
+    background-position: bottom;
+    .banner_content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+
+        .banner_text {
+            width: 40%;
+            h1 {
+                @include styleTitle($fs-title);
+            }
+            .sub_title {
+                @include styleSubTitle($fs-sub-title);
+            }
+
+            .desciption {
+                font-size: 18px;
+                line-height: 16px;
+                margin: 10px 0;
+            }
+
+            .group_button {
+                button {
+                    &:first-child {
+                        @include styleButton();
+                    }
+
+                    &:last-child {
+                        @include styleButton();
+                    }
+                }
+            }
+        }
+
+        .banner_img {
+            width: 60%;
+            padding-left: 50px;
+            img {
+                height: 500px;
+                
+            }
+        }
+    }
+}
