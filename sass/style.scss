@@ -1,56 +1,48 @@
-// Biến (Variable)
-// Biến trong scss giúp lưu trữ các giá trị sử dụng nhiều lần như màu sắc, px, font-weight,..
-$color-blue-1 : #2b72dc;
-$color-blue-2 : #1E345E;
-$color-bg : #F6F9FE;
-
-// Biến về độ dày chữ
-$fw-title : bold;
-$fw-sub-title : 600;
-$fw-content : 400;
-
-// biến về kích thước chữ
-$fs-title : 60px;
-$fs-sub-title : 20px;
-$fs-section-title : 35px;
-$fs-content : 16px;
-
-// MIXIN : 
-@mixin styleTitle ($fs) {
-    font-weight: $fw-title;
-    color: $color-blue-1;
-    font-size: $fs;
-}
-
-@mixin styleContent () {
-    font-weight: $fw-content;
-    color: $color-blue-2;
-    font-size: $fs-content;
-}
-
-@mixin styleSubTitle ($fs) {
-    font-size: $fs;
-    font-weight: $fw-sub-title ;
-    color: $color-blue-2;
-}
-
-@mixin styleButton(){
-    border: 2px solid $color-blue-1;
-    background-color: $color-bg;
-    color: $color-blue-1;
-    border-radius: 8px;
-    transition: all 0.5s;
-    padding: 10px 20px;
-    cursor: pointer;
-    &:hover {
-        border: 2px solid $color-bg;
-        background-color: $color-blue-1;
-        color: $color-bg;
+@import './variable/_variable.scss';
+@import './mixin/mixin.scss';
+//Dùng vòng lặp để tạo ra các ultility class cđể sử dụng trong nhiều dự án
+//margin và padding
+$spacer: 1;
+@for $numbers from 0 through 5 {
+    .m-#{$numbers + 1}  {
+        margin: $spacer * $numbers + rem;
     }
-    i {
-        margin-right: 10px;
+
+    mt-#{$numbers + 1} {
+        margin-top: $spacer * $numbers + rem;
+    }
+
+    mb-#{$numbers + 1} {
+        margin-bottom: $spacer * $numbers + rem;
+    }
+
+    ml-#{$numbers + 1} {
+        margin-left: $spacer * $numbers + rem;
+    }
+
+    mr-#{$numbers + 1} {
+        margin-right: $spacer * $numbers + rem;
+    }
+
+}
+
+//cách tạo ra các ultility class liên quan về màu sắc
+$arr-color: ("green":"green","red":"red","orange":"orange");
+@each $color,$value in $arr-color {
+    .bg-#{$color}{
+        background-color: $value;
     }
 }
+
+
+
+//EXTEND : giống như MIXIN nhưng không thể thay đổi giá trị, truyền tham số
+.position_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 // reset css
 * {
     padding: 0;
@@ -142,10 +134,13 @@ header {
 
         .banner_text {
             width: 40%;
+            //để sử dụng MIXIN cần thêm @include phía trước
             h1 {
+                margin: 10px 0;
                 @include styleTitle($fs-title);
             }
             .sub_title {
+                margin: 10px 0;
                 @include styleSubTitle($fs-sub-title);
             }
 
@@ -161,8 +156,8 @@ header {
                         @include styleButton();
                     }
 
-                    &:last-child {
-                        @include styleButton();
+                    &:last-child {  
+                        @include styleButton2($box-shadow);
                     }
                 }
             }
@@ -176,5 +171,97 @@ header {
                 
             }
         }
+    }
+}
+
+.product {
+    padding: 40px 0;
+    h2 {
+        margin: 30px 0;
+        @include styleSubTitle(30px);
+        @extend .position_center;
+    }
+
+    .product_content {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin-top: 5%;
+        @media screen and (max-width:992px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .item {
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            border-radius: 8px;
+            animation-name: zoomIn;
+            animation-duration: 2s;
+            animation-iteration-count: 1;
+            transform: scale(0);
+            animation-fill-mode: forwards;  //giữ lại giá trị sau cùng khi chạy animation
+            //@for : vòng lặp trong sass
+            @for $number from 1 through 5 {
+                &:nth-child(#{$number + 1}){
+                    animation-delay: $number *1s; 
+                }
+            }
+
+            img {
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+                width: 90%;
+                margin: 5%;
+                border-radius: 8px;
+            }
+
+            h3 {
+                display: flex;
+                justify-content: space-between;
+                margin: 0 5% 5%;
+                @include styleTitle(25px);
+            }
+
+            p {
+                @include styleSubTitle(18px);
+                margin: 0 5% 5%;
+            }
+
+            .btn_group {
+                display: flex;
+                justify-content: space-between;
+                margin: 0 5% 5%;
+                .product_rate {
+                    width: 50%;
+                    display: flex;
+                    align-items: center;
+                    i {
+                        color: gold;
+                        margin: 2px;
+                        font-size: 25px;
+                    }
+                }
+                button {
+                    width: 50%;
+                    @include styleButton2(unset);
+                }
+            }
+        }
+    }
+}
+
+footer {
+    background-color: $color-blue-1;
+    @extend .position_center;
+    h3 {
+        margin: 2% auto;
+        color: $color-bg;
+    }
+}
+
+@keyframes zoomIn {
+    //đầu tiên scale 0%
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
     }
 }
